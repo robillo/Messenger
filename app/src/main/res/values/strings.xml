@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Messenger</string>
+    <string name="messages">Messages</string>
+    <string name="back_to_top">Back to Top</string>
+    <string name="s_hours_ago">%s hours ago</string>
+    <string name="your_messages_with_s">Your messages with %s</string>
+</resources>

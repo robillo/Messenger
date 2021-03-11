@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--suppress AndroidUnknownAttribute -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/parentView"
+    android:background="@color/white"
+    tools:context=".ui.message_detail.MessageDetailActivity">
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/ic_back"
+        android:padding="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/senderDetailsHolder"
+        app:layout_constraintBottom_toBottomOf="@id/senderDetailsHolder"
+        app:layout_constraintEnd_toStartOf="@id/senderDetailsHolder"
+        android:id="@+id/backButton"
+        tools:ignore="ContentDescription" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/backButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingTop="22dp"
+        android:paddingBottom="22dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:id="@+id/senderDetailsHolder">
+
+        <ImageView
+            android:id="@+id/profileBackgroundIv"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:src="@drawable/bg_message_sender_initial"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="ContentDescription"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="A"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:textStyle="bold"
+            android:textColor="@color/white"
+            android:paddingBottom="1dp"
+            android:textSize="20sp"
+            fontPath="fonts/ubuntu_black.ttf"
+            app:layout_constraintTop_toTopOf="@id/profileBackgroundIv"
+            app:layout_constraintBottom_toBottomOf="@id/profileBackgroundIv"
+            app:layout_constraintStart_toStartOf="@id/profileBackgroundIv"
+            app:layout_constraintEnd_toEndOf="@id/profileBackgroundIv"
+            tools:ignore="MissingPrefix"
+            android:id="@+id/messageSenderInitialTv"/>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/profileBackgroundIv"
+            app:layout_constraintBottom_toBottomOf="@id/profileBackgroundIv"
+            app:layout_constraintStart_toStartOf="@id/profileBackgroundIv"
+            app:layout_constraintEnd_toEndOf="@id/profileBackgroundIv"
+            android:src="@drawable/ic_person_white"
+            android:id="@+id/personIv"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/messageSenderNameTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="David Goggins"
+            android:textSize="14sp"
+            tools:textStyle="bold"
+            fontPath="fonts/ubuntu_bold.ttf"
+            android:layout_marginStart="12dp"
+            android:textColor="@color/header_black"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@id/profileBackgroundIv"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/messageSenderMessageTv"
+            tools:ignore="MissingPrefix" />
+
+        <TextView
+            android:id="@+id/messageSenderMessageTv"
+            fontPath="fonts/ubuntu_regular.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/read_message_text"
+            android:ellipsize="end"
+            android:textSize="12sp"
+            android:lines="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/messageSenderNameTv"
+            app:layout_constraintTop_toBottomOf="@id/messageSenderNameTv"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:ignore="MissingPrefix"
+            tools:text="@string/your_messages_with_s" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
+        android:paddingEnd="20dp"
+        android:paddingStart="20dp"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        app:reverseLayout="true"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"
+        tools:listitem="@layout/cell_full_chat_message"
+        app:layout_constraintVertical_weight="1"
+        app:layout_constraintTop_toBottomOf="@id/senderDetailsHolder"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/fullMessageRecycler">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        app:layout_constraintTop_toBottomOf="@id/senderDetailsHolder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/forced_fading_edge"
+        tools:ignore="ContentDescription" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

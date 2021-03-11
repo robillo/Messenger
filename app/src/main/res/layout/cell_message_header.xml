@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--suppress AndroidUnknownAttribute -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="20dp"
+    android:paddingBottom="10dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:background="#FAFAFA"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="16sp"
+        android:textColor="#C0C3C5"
+        fontPath="fonts/ubuntu_medium.ttf"
+        tools:textStyle="bold"
+        tools:text="1 hour ago"
+        android:id="@+id/hoursAgoTv"
+        tools:ignore="MissingPrefix" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
