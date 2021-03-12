@@ -12,5 +12,6 @@ data class Message(
    val messageReadState: String,
    val messagePostedTime: String,
    val folderName: String,
-   var messagePostedHour: String? = ""
+   var messagePostedHour: String? = "",
+   val threadId: String
 )

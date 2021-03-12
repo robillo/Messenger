@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.database.Cursor
 import android.provider.Telephony
-import android.util.Log
 import androidx.annotation.WorkerThread
 import com.devswhocare.messenger.data.model.Message
 import java.lang.Exception
@@ -21,6 +20,7 @@ class MessagesUtil(private val contentResolver: ContentResolver) {
         const val columnNameBody = "body"
         const val columnNameRead = "read"
         const val columnNameType = "type"
+        const val columnNameThreadId = "thread_id"
         const val emptyString = ""
     }
 
@@ -36,7 +36,8 @@ class MessagesUtil(private val contentResolver: ContentResolver) {
                 Telephony.Sms.BODY,
                 Telephony.Sms.READ,
                 Telephony.Sms.DATE,
-                Telephony.Sms.TYPE
+                Telephony.Sms.TYPE,
+                Telephony.Sms.THREAD_ID
             ),
             null,
             null,
@@ -52,7 +53,8 @@ class MessagesUtil(private val contentResolver: ContentResolver) {
                         messageText = getStringForColumn(cursor, columnNameBody),
                         messageReadState = getStringForColumn(cursor, columnNameRead),
                         messagePostedTime = time,
-                        folderName = getFolderName(cursor)
+                        folderName = getFolderName(cursor),
+                        threadId = getStringForColumn(cursor, columnNameThreadId)
                     )
                     messagesList.add(message)
                     cursor.moveToNext()
