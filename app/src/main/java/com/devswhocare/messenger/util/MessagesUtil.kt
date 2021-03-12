@@ -1,21 +1,34 @@
 package com.devswhocare.messenger.util
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
+import android.database.Cursor
 import android.provider.Telephony
+import android.util.Log
 import androidx.annotation.WorkerThread
 import com.devswhocare.messenger.data.model.Message
+import java.lang.Exception
 
 class MessagesUtil(private val contentResolver: ContentResolver) {
 
     private var messageCount = 0
     private lateinit var message: Message
-    private lateinit var messagesList: ArrayList<Message>
 
+    companion object {
+        const val columnNameDate = "date"
+        const val columnNameId = "_id"
+        const val columnNameAddress = "address"
+        const val columnNameBody = "body"
+        const val columnNameRead = "read"
+        const val columnNameType = "type"
+        const val emptyString = ""
+    }
+
+    @SuppressLint("Recycle")
     @WorkerThread
     suspend fun getAllSmsFromProvider(): MutableList<Message> {
-        val lstSms: MutableList<Message> = ArrayList()
-        val cr: ContentResolver = contentResolver
-        cr.query(
+        val messagesList: MutableList<Message> = ArrayList()
+        contentResolver.query(
             Telephony.Sms.Inbox.CONTENT_URI,
             arrayOf(
                 Telephony.Sms._ID,
@@ -32,60 +45,37 @@ class MessagesUtil(private val contentResolver: ContentResolver) {
             messageCount = cursor.count
             if (cursor.moveToFirst()) {
                 for (i in 0 until messageCount) {
-                    val time = cursor.getString(cursor.getColumnIndexOrThrow("date"))
+                    val time = getStringForColumn(cursor, columnNameDate)
                     message = Message(
-                        messageId = cursor.getString(cursor.getColumnIndexOrThrow("_id")),
-                        messageSenderAddress = cursor.getString(cursor.getColumnIndexOrThrow("address")),
-                        messageText = cursor.getString(cursor.getColumnIndexOrThrow("body")),
-                        messageReadState = cursor.getString(cursor.getColumnIndex("read")),
+                        messageId = getStringForColumn(cursor, columnNameId),
+                        messageSenderAddress = getStringForColumn(cursor, columnNameAddress),
+                        messageText = getStringForColumn(cursor, columnNameBody),
+                        messageReadState = getStringForColumn(cursor, columnNameRead),
                         messagePostedTime = time,
-                        folderName = if (cursor.getString(cursor.getColumnIndexOrThrow("type")).contains(
-                                Constants.FLAG_TYPE_INBOX
-                            )
-                        ) {
-                            Constants.FOLDER_TYPE_INBOX
-                        } else {
-                            Constants.FOLDER_TYPE_SENT
-                        }
+                        folderName = getFolderName(cursor)
                     )
-//                    hoursAgo = DateTimeUtils.getHoursAgoAccordingToCurrentTimeUsingMillis(time.toLong())
-                    lstSms.add(message)
+                    messagesList.add(message)
                     cursor.moveToNext()
                 }
             }
             cursor.close()
         }
-        return lstSms
+        return messagesList
     }
 
-//    private suspend fun getGroupDataIntoHashMap(): HashMap<Long, ArrayList<Message>> {
-//        val map: HashMap<Long, ArrayList<Message>> = HashMap()
-//        getAllSmsFromProvider().forEach {
-//            val hoursAgo = it.hoursAgo
-//            if (map.containsKey(hoursAgo)) {
-//                map[hoursAgo]?.add(it)
-//            } else {
-//                val list = ArrayList<Message>()
-//                list.add(it)
-//                map[hoursAgo] = list
-//            }
-//        }
-//        return map
-//    }
-//
-//    @WorkerThread
-//    suspend fun getConsolidatedList(): ArrayList<Message> {
-//        messagesList = ArrayList(messageCount + 1)
-//        getGroupDataIntoHashMap().let { map ->
-//            map.keys.forEach {
-//                val headerItem = HeaderItem(it)
-//                messagesList.add(headerItem)
-//                map[it]?.forEach {
-//                    val dataItem = DataItem(it)
-//                    messagesList.add(dataItem)
-//                }
-//            }
-//        }
-//        return messagesList
-//    }
+    private fun getStringForColumn(cursor: Cursor, columnName: String): String {
+        return try {
+            cursor.getString(cursor.getColumnIndex(columnName))
+        }
+        catch (ignored: Exception) {
+            emptyString
+        }
+    }
+
+    private fun getFolderName(cursor: Cursor): String {
+        return if (cursor.getString(cursor.getColumnIndex(columnNameType)).contains(Constants.FLAG_TYPE_INBOX))
+            Constants.FOLDER_TYPE_INBOX
+        else
+            Constants.FOLDER_TYPE_SENT
+    }
 }
