@@ -215,6 +215,7 @@ open class MessagesActivity : BaseActivity(), OnLoadMoreListener,
             senderAddressToOpen,
             position
         ))
+        animateActivityTransition(R.anim.slide_from_bottom_up, R.anim.anim_none)
     }
 
     private fun setClickListeners() {

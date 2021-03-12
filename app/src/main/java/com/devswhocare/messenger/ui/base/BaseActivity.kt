@@ -48,4 +48,12 @@ abstract class BaseActivity: DaggerAppCompatActivity() {
             insets
         }
     }
+
+    fun animateActivityTransition(nextActivityEnterAnim: Int, currentActivityExitAnim: Int) {
+        overridePendingTransition(nextActivityEnterAnim, currentActivityExitAnim)
+    }
+
+    fun animateBackPressTransition(previousActivityEnterAnim: Int, currentActivityExitAnim: Int) {
+        overridePendingTransition(previousActivityEnterAnim, currentActivityExitAnim)
+    }
 }

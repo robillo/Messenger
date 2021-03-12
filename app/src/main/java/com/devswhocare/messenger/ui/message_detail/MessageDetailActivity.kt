@@ -115,4 +115,9 @@ class MessageDetailActivity : BaseActivity() {
             binding.personIv.visibility = View.VISIBLE
         }
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        animateBackPressTransition(R.anim.anim_none, R.anim.slide_from_top_down)
+    }
 }
