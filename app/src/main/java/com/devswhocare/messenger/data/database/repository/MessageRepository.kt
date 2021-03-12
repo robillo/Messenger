@@ -1,6 +1,5 @@
 package com.devswhocare.messenger.data.database.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.devswhocare.messenger.data.database.dao.MessageDao
 import com.devswhocare.messenger.data.model.Message
@@ -8,8 +7,8 @@ import com.devswhocare.messenger.data.model.Message
 class MessageRepository(private val messageDao: MessageDao) {
 
     companion object {
-        private val pageSize = 10
-        private val indexOffset = 1
+        private const val pageSize = 10
+        private const val indexOffset = 1
     }
 
     fun storeMessagesLocally(messageList: MutableList<Message>) {
@@ -17,7 +16,6 @@ class MessageRepository(private val messageDao: MessageDao) {
     }
 
     fun getMessagesForPage(pageNumber: Int): LiveData<MutableList<Message>> {
-        Log.e("mytag", "offset ${(pageNumber - 1) * indexOffset} $pageSize")
         return messageDao.getMessagesForPage(
             (pageNumber - indexOffset) * pageSize,
             pageSize

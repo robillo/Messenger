@@ -10,6 +10,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.telephony.SmsMessage
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.devswhocare.messenger.R
@@ -18,21 +19,29 @@ import com.devswhocare.messenger.ui.messages.MessagesActivity
 class MessageReceiver: BroadcastReceiver() {
 
     companion object {
+        private const val intentActionMessageReceived =
+                "android.provider.Telephony.SMS_RECEIVED"
         private const val CHANNEL_ID = "1234"
         private const val CHANNEL_NAME = "ReceiveSMSChannel"
         private const val CHANNEL_DESCRIPTION = "ReceiveSMSDescription"
         private const val KEY_FORMAT = "format"
+        private const val notificationIdMessage = 12
+        private const val requestCodeMessagesActivity = 10
+        private const val flagsMessagesActivity = PendingIntent.FLAG_UPDATE_CURRENT
+        private const val pduString = "pdus"
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
         intent?.let { it ->
-            if (it.action.equals("android.provider.Telephony.SMS_RECEIVED")) {
+            if (it.action.equals(intentActionMessageReceived)) {
                 it.extras?.let { bundle ->
-                    val pdu_Objects =
-                        bundle["pdus"] as Array<Any>?
-                    if (pdu_Objects != null) {
-                        for (aObject in pdu_Objects) {
+                    val pduObjects =
+                        bundle[pduString] as Array<Any>?
+                    if (pduObjects != null) {
+                        for (aObject in pduObjects) {
+                            Log.e("mytag", "$aObject ${getIncomingMessage(aObject, bundle)}")
                             getIncomingMessage(aObject, bundle)?.let { currentSMS ->
+                                Log.e("mytag", "${currentSMS.displayOriginatingAddress}")
                                 val senderNo: String = currentSMS.displayOriginatingAddress
                                 val message: String = currentSMS.displayMessageBody
                                 issueNotification(context!!, senderNo, message)
@@ -50,20 +59,41 @@ class MessageReceiver: BroadcastReceiver() {
         message: String
     ) {
         createNotificationChannel(context)
+        Log.e("mytag", "notification sender number $senderNo")
         val intent = MessagesActivity.newIntent(context, senderNo)
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-
-        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher_round)
-            .setContentTitle(senderNo)
-            .setContentText(message)
-            .setPriority(NotificationCompat.PRIORITY_MAX)
-            .setDefaults(Notification.DEFAULT_ALL)
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
+                context,
+                requestCodeMessagesActivity,
+                intent,
+                flagsMessagesActivity
+        )
         with(NotificationManagerCompat.from(context)) {
-            notify(12, builder.build())
+            notify(
+                    notificationIdMessage,
+                    getNotificationBuilder(
+                            context,
+                            senderNo,
+                            message,
+                            pendingIntent
+                    ).build()
+            )
         }
+    }
+
+    private fun getNotificationBuilder(
+            context: Context,
+            contentTitle: String,
+            contentMessage: String,
+            pendingIntent: PendingIntent
+    ): NotificationCompat.Builder {
+        return NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setContentTitle(contentTitle)
+                .setContentText(contentMessage)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
     }
 
     private fun createNotificationChannel(context: Context) {

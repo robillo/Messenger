@@ -3,6 +3,7 @@ package com.devswhocare.messenger.ui.message_detail
 import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -56,6 +57,7 @@ class MessageDetailActivity : BaseActivity() {
     override fun setup() {
         setWindowInsets(binding.parentView)
         getExtraParameters()
+        Log.e("mytag", "sender address is $senderAddressToOpen")
         setClickListeners()
         renderColors()
         setAdapter()
@@ -81,7 +83,10 @@ class MessageDetailActivity : BaseActivity() {
     private fun fetchAddressMessages() {
         viewModel.getMessagesForAddress(senderAddressToOpen).observe(this, { list ->
             list?.let {
-                adapter.setMessages(list, ColorUtil.getAvatarColorForPosition(position))
+                Log.e("mytag", "list is $list")
+                adapter.setMessages(list)
+            } ?: run {
+                Log.e("mytag", "list is null")
             }
         })
     }

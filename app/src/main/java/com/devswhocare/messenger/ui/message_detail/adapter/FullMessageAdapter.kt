@@ -9,7 +9,6 @@ import com.devswhocare.messenger.databinding.CellFullChatMessageBinding
 class FullMessageAdapter: RecyclerView.Adapter<FullMessageHolder>() {
 
     private lateinit var messageList: List<Message>
-    private var accentColor: Int = 0xFFFFFF
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FullMessageHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -19,7 +18,7 @@ class FullMessageAdapter: RecyclerView.Adapter<FullMessageHolder>() {
     }
 
     override fun onBindViewHolder(holder: FullMessageHolder, position: Int) {
-        holder.setMessage(messageList[position], accentColor)
+        holder.setMessage(messageList[position])
     }
 
     override fun getItemCount(): Int {
@@ -27,8 +26,8 @@ class FullMessageAdapter: RecyclerView.Adapter<FullMessageHolder>() {
         else 0
     }
 
-    fun setMessages(messageList: List<Message>, accentColor: Int) {
+    fun setMessages(messageList: List<Message>) {
         this.messageList = messageList
-        this.accentColor = accentColor
+        notifyDataSetChanged()
     }
 }
