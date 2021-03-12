@@ -10,7 +10,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.telephony.SmsMessage
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.devswhocare.messenger.R
@@ -31,6 +30,7 @@ class MessageReceiver: BroadcastReceiver() {
         private const val pduString = "pdus"
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onReceive(context: Context?, intent: Intent?) {
         intent?.let { it ->
             if (it.action.equals(intentActionMessageReceived)) {
@@ -39,9 +39,7 @@ class MessageReceiver: BroadcastReceiver() {
                         bundle[pduString] as Array<Any>?
                     if (pduObjects != null) {
                         for (aObject in pduObjects) {
-                            Log.e("mytag", "$aObject ${getIncomingMessage(aObject, bundle)}")
                             getIncomingMessage(aObject, bundle)?.let { currentSMS ->
-                                Log.e("mytag", "${currentSMS.displayOriginatingAddress}")
                                 val senderNo: String = currentSMS.displayOriginatingAddress
                                 val message: String = currentSMS.displayMessageBody
                                 issueNotification(context!!, senderNo, message)
@@ -59,7 +57,6 @@ class MessageReceiver: BroadcastReceiver() {
         message: String
     ) {
         createNotificationChannel(context)
-        Log.e("mytag", "notification sender number $senderNo")
         val intent = MessagesActivity.newIntent(context, senderNo)
         val pendingIntent: PendingIntent = PendingIntent.getActivity(
                 context,

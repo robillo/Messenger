@@ -4,4 +4,7 @@
     <string name="back_to_top">Back to Top</string>
     <string name="s_hours_ago">%s hours ago</string>
     <string name="your_messages_with_s">Your messages with %s</string>
+    <string name="allow_messages_permission">Allow Messages Permission</string>
+    <string name="description_no_permission_given">It seems like you have not given us permission to read and receive messages.</string>
+    <string name="please_give_permission">Missing Permissions!</string>
 </resources>

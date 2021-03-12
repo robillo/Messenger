@@ -1,6 +1,5 @@
 package com.devswhocare.messenger.util
 
-import android.util.Log
 import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.*

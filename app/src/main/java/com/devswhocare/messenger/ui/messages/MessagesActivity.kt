@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -50,7 +49,6 @@ open class MessagesActivity : BaseActivity(), OnLoadMoreListener,
     companion object {
         fun newIntent(context: Context, senderAddressToOpen: String): Intent {
             val intent = Intent(context, MessagesActivity::class.java)
-            Log.e("mytag", "$senderAddressToOpen new intent")
             intent.putExtra(extraMessageAddress, senderAddressToOpen)
             return intent
         }
@@ -80,10 +78,12 @@ open class MessagesActivity : BaseActivity(), OnLoadMoreListener,
     }
 
     private fun fetchDataIfPermissionsGiven() {
-        if(hasMessagesPermission())
+        if(hasMessagesPermission()) {
+            binding.permissionRequiredHolder.visibility = View.GONE
             queryContentProviderForNewMessages()
+        }
         else
-            requestMessagePermissions()
+            binding.permissionRequiredHolder.visibility = View.VISIBLE
     }
 
     private fun requestMessagePermissions() {
@@ -142,7 +142,6 @@ open class MessagesActivity : BaseActivity(), OnLoadMoreListener,
     private fun getExtraParameters() {
         intent?.getStringExtra(extraMessageAddress)?.let {
             senderAddressToOpen = it
-            Log.e("mytag", "received $senderAddressToOpen $it")
         }
     }
 
@@ -207,12 +206,10 @@ open class MessagesActivity : BaseActivity(), OnLoadMoreListener,
     private fun openDetailsScreenIfRequired() {
         if(::senderAddressToOpen.isInitialized) {
             openDetailsScreen(senderAddressToOpen, 0)
-            Log.e("mytag", "open $senderAddressToOpen")
         }
     }
 
     private fun openDetailsScreen(senderAddressToOpen: String, position: Int) {
-        Log.e("mytag", "sender address (activity) is $senderAddressToOpen")
         startActivity(MessageDetailActivity.newIntent(
             this,
             senderAddressToOpen,
@@ -221,6 +218,9 @@ open class MessagesActivity : BaseActivity(), OnLoadMoreListener,
     }
 
     private fun setClickListeners() {
+        binding.retryTv.setOnClickListener {
+            requestMessagePermissions()
+        }
         binding.backToTopTv.setOnClickListener {
             binding.backToTopTv.visibility = View.GONE
             binding.messagesRecycler.scrollToPosition(firstMessagePosition)
@@ -242,7 +242,6 @@ open class MessagesActivity : BaseActivity(), OnLoadMoreListener,
     }
 
     override fun onMessageClicked(position: Int, message: Message, accentColor: Int) {
-        Log.e("mytag", "message click $message $position")
         openDetailsScreen(message.messageSenderAddress, position)
     }
 }
